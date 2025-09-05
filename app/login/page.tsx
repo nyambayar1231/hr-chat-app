@@ -4,8 +4,6 @@ import { signIn } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 
 export default function LoginPage() {
-  // const session = await auth();
-
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
       <div className="w-full max-w-sm space-y-6 text-center">
