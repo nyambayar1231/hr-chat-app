@@ -6,7 +6,7 @@
 //   ],
 // };
 
-export const middleware = (...res) => {
+export const middleware = (...res: any) => {
   console.log(res);
   return;
 };
