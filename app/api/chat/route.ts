@@ -28,6 +28,8 @@ export async function POST(request: NextRequest) {
 
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:3100';
 
+    console.log({ backendUrl });
+
     const response = await fetch(`${backendUrl}/chat`, {
       method: 'POST',
       headers: {
