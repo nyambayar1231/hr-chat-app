@@ -16,7 +16,7 @@ export default function LoginPage() {
         </p>
         <Button
           className="w-full"
-          onClick={() => signIn('microsoft-entra-id', { callbackUrl: '/' })}
+          onClick={() => signIn('microsoft-entra-id', { callbackUrl: '/chat' })}
         >
           Sign in with Microsoft
         </Button>
