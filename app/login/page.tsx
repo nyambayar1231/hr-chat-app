@@ -17,15 +17,15 @@ export default function LoginPage() {
     }
   }, [session, status, router]);
 
-  if (status === 'loading') {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-6">
-        <div className="w-full max-w-sm space-y-6 text-center">
-          <p>Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  // if (status === 'loading') {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center p-6">
+  //       <div className="w-full max-w-sm space-y-6 text-center">
+  //         <p>Loading...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
