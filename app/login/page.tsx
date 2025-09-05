@@ -12,10 +12,10 @@ export default function LoginPage() {
   console.log({ session });
 
   useEffect(() => {
-    if (session?.user) {
+    if (status === 'authenticated' && session?.user) {
       router.push('/');
     }
-  }, [session, router]);
+  }, [session, status, router]);
 
   if (status === 'loading') {
     return (
