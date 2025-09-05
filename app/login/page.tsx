@@ -2,7 +2,6 @@
 
 import { signIn } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
-import { auth } from '@/auth';
 
 export default function LoginPage() {
   // const session = await auth();
