@@ -1,13 +1,7 @@
-// export { auth as middleware } from '@/auth';
-
-export const middleware = (...res: any) => {
-  console.log(res);
-};
+export { auth as middleware } from '@/auth';
 
 export const config = {
   matcher: [
-    '/', // Homepage
-    '/chat/:path*', // Chat routes
-    '/api/chat', // Chat API
+    '/((?!api/auth|_next/static|_next/image|favicon.ico|login|public).*)',
   ],
 };
