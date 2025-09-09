@@ -1,10 +1,11 @@
-import { useState, useCallback } from "react";
-import { apiService, ChatResponse } from "@/lib/api";
+import { useState, useCallback } from 'react';
+import { apiService, ChatResponse } from '@/lib/api';
+import { useSession } from 'next-auth/react';
 
 export interface Message {
   id: string;
   content: string;
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
   timestamp: Date;
 }
 
@@ -17,11 +18,18 @@ export interface UseChatReturn {
 }
 
 export function useChat(): UseChatReturn {
+  const { data: session } = useSession();
+
+  const username = session?.user?.name;
+  const firstname = username?.split(' ');
+
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: "1",
-      content: "Сайн уу? Би таны ai туслах байна, асуух зүйлээ асууна уу.",
-      role: "assistant",
+      id: '1',
+      content: `Сайн уу ${
+        firstname?.[0] ?? ''
+      }, Би таны ai туслах байна, асуух зүйлээ асууна уу.`,
+      role: 'assistant',
       timestamp: new Date(),
     },
   ]);
@@ -35,7 +43,7 @@ export function useChat(): UseChatReturn {
       const userMessage: Message = {
         id: Date.now().toString(),
         content: content.trim(),
-        role: "user",
+        role: 'user',
         timestamp: new Date(),
       };
 
@@ -50,21 +58,21 @@ export function useChat(): UseChatReturn {
 
         const aiMessage: Message = {
           id: (Date.now() + 1).toString(),
-          content: response.response || "Уучлаарай, Та дахин оролдоно уу.",
-          role: "assistant",
+          content: response.response || 'Уучлаарай, Та дахин оролдоно уу.',
+          role: 'assistant',
           timestamp: new Date(),
         };
 
         setMessages((prev) => [...prev, aiMessage]);
       } catch (err) {
         const errorMessage =
-          err instanceof Error ? err.message : "An unknown error occurred";
+          err instanceof Error ? err.message : 'An unknown error occurred';
         setError(errorMessage);
 
         const errorResponseMessage: Message = {
           id: (Date.now() + 1).toString(),
-          content: "Уучлаарай, алдаа гарлаа. Та дахин оролдоно уу.",
-          role: "assistant",
+          content: 'Уучлаарай, алдаа гарлаа. Та дахин оролдоно уу.',
+          role: 'assistant',
           timestamp: new Date(),
         };
 
@@ -79,9 +87,9 @@ export function useChat(): UseChatReturn {
   const clearMessages = useCallback(() => {
     setMessages([
       {
-        id: "1",
-        content: "Сайн уу? Би таны ai туслах байна, асуух зүйлээ асууна уу.",
-        role: "assistant",
+        id: '1',
+        content: 'Сайн уу? Би таны ai туслах байна, асуух зүйлээ асууна уу.',
+        role: 'assistant',
         timestamp: new Date(),
       },
     ]);

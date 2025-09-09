@@ -1,18 +1,29 @@
 'use client';
 
-import type React from 'react';
+import * as React from 'react';
 
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { Send, Bot, User } from 'lucide-react';
+import { Send, Bot, User, ChevronDown, Wrench } from 'lucide-react';
 import { useChat } from '@/lib/hooks/useChat';
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@radix-ui/react-dropdown-menu';
 
 export default function ChatPage() {
-  const { messages, isLoading, error, sendMessage } = useChat();
+  const { messages, isLoading, sendMessage } = useChat();
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [selectedModel, setSelectedModel] = React.useState('General Modal');
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -31,29 +42,82 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <main className="flex flex-col h-screen bg-gradient-to-br from-slate-50 to-slate-100 w-full">
       {/* Header */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+      <header className="flex justify-start border-b border-slate-200 bg-white/80 backdrop-blur-md shadow-sm z-10">
+        <div className="max-w-4xl px-4 py-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-              <Bot className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-lg font-semibold text-foreground">
-                Techpack HR help chatbot
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Always here to help
-              </p>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="min-w-[180px] justify-between bg-white border-slate-300 hover:bg-slate-50 shadow-sm"
+                >
+                  <div className="flex items-center gap-2">
+                    {selectedModel === 'General Modal' ? (
+                      <Bot className="w-4 h-4 text-primary" />
+                    ) : (
+                      <Wrench className="w-4 h-4 text-purple-600" />
+                    )}
+
+                    <span className="font-medium text-slate-700">
+                      {selectedModel}
+                    </span>
+                  </div>
+                  <ChevronDown className="w-4 h-4 text-slate-500" />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                className="w-56 bg-white border-slate-200 shadow-xl z-10"
+                align="start"
+              >
+                <DropdownMenuLabel className="text-slate-600 font-semibold">
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    AI Models
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-slate-200" />
+
+                <DropdownMenuItem
+                  className="flex items-center gap-3 py-3 cursor-pointer hover:bg-green-50 focus:bg-green-50"
+                  onClick={() => setSelectedModel('General Modal')}
+                >
+                  <Bot className="w-4 h-4 text-primary" />
+                  <div className="flex-1">
+                    <div className="font-medium text-slate-700">
+                      General Modal
+                    </div>
+                  </div>
+                  {selectedModel === 'General Modal' && (
+                    <div className="w-2 h-2 bg-primary rounded-full" />
+                  )}
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  className="flex items-center gap-3 py-3 cursor-pointer hover:bg-slate-50 focus:bg-green-50"
+                  onClick={() => setSelectedModel('Copilot Studio')}
+                >
+                  <Wrench className="w-4 h-4 text-purple-600" />
+                  <div className="flex-1">
+                    <div className="font-medium text-slate-700 dark:text-slate-200">
+                      Copilot Studio
+                    </div>
+                  </div>
+                  {selectedModel === 'Copilot Studio' && (
+                    <div className="w-2 h-2 bg-purple-600 rounded-full" />
+                  )}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="w-full flex-1 overflow-y-auto">
+        <div className="mx-auto px-4 py-6">
           <div className="space-y-6">
             {messages.map((message) => (
               <div
@@ -124,7 +188,6 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Input */}
       <div className="border-t border-border bg-card/50 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <form onSubmit={handleSubmit} className="flex gap-3">
@@ -149,6 +212,6 @@ export default function ChatPage() {
           </p>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

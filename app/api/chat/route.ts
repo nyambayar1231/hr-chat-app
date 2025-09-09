@@ -28,13 +28,14 @@ export async function POST(request: NextRequest) {
 
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:3100';
 
-    console.log({ backendUrl });
+    console.log(session.user?.name);
 
     const response = await fetch(`${backendUrl}/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-User-Email': session.user?.email || '',
+        'X-User-Name': session.user?.name || '',
         Cookie: request.headers.get('cookie') || '',
       },
       credentials: 'include',
