@@ -87,11 +87,7 @@ export function NavUser({ user }: NavUserProps) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              {/* <SignOut /> */}
-              <LogOut className="text-sm w-full" />
-              Log out
-            </DropdownMenuItem>
+            <SignOut />
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
