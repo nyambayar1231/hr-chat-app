@@ -1,4 +1,4 @@
-import { ChevronsUpDown, LogOut, Sparkles } from 'lucide-react';
+import { ChevronsUpDown, Sparkles } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -16,7 +16,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Button } from './ui/button';
 import { SignOut } from './signout-button';
 
 type NavUserProps = {

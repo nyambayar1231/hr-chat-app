@@ -189,7 +189,7 @@ export default function ChatPage() {
       </div>
 
       <div className="border-t border-border bg-card/50 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+        <div className="mx-auto px-4 py-4">
           <form onSubmit={handleSubmit} className="flex gap-3">
             <Input
               value={input}
