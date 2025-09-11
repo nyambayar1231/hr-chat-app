@@ -4,6 +4,8 @@ export interface ChatRequest {
 
 export interface ChatResponse {
   response: string;
+  contentType: string;
+  data: Record<string, any>[];
 }
 
 export interface ApiError {
@@ -16,7 +18,7 @@ class ApiService {
 
   constructor() {
     // In production, this would be your domain
-    this.baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    this.baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
   }
 
   private async makeRequest<T>(
@@ -26,7 +28,7 @@ class ApiService {
     const url = `${this.baseUrl}${endpoint}`;
 
     const defaultHeaders = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     };
 
     const config: RequestInit = {
@@ -43,7 +45,7 @@ class ApiService {
       if (!response.ok) {
         const errorData = await response
           .json()
-          .catch(() => ({ error: "Unknown error" }));
+          .catch(() => ({ error: 'Unknown error' }));
         throw new Error(
           errorData.error || `HTTP error! status: ${response.status}`
         );
@@ -54,13 +56,13 @@ class ApiService {
       if (error instanceof Error) {
         throw error;
       }
-      throw new Error("Network error occurred");
+      throw new Error('Network error occurred');
     }
   }
 
   async sendChatMessage(message: string): Promise<ChatResponse> {
-    return this.makeRequest<ChatResponse>("/api/chat", {
-      method: "POST",
+    return this.makeRequest<ChatResponse>('/api/chat', {
+      method: 'POST',
       body: JSON.stringify({ message }),
     });
   }
