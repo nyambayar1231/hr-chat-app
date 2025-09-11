@@ -99,6 +99,7 @@ export function useChat(): UseChatReturn {
         content: 'Сайн уу? Би таны ai туслах байна, асуух зүйлээ асууна уу.',
         role: 'assistant',
         timestamp: new Date(),
+        contentType: 'text',
       },
     ]);
     setError(null);
