@@ -1,18 +1,20 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { apiService, ChatResponse } from '@/lib/api';
 import { useSession } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 
-export interface Message {
-  id: string;
+export interface ChatMessage {
+  // id: string;
+  role: 'user' | 'system';
   content: string;
-  role: 'user' | 'assistant';
-  timestamp: Date;
-  contentType: string;
+  // conversationId: string;
+  contentType: 'text' | 'table';
   data?: Record<string, any>[];
+  timestamp: string;
 }
 
 export interface UseChatReturn {
-  messages: Message[];
+  messages: ChatMessage[];
   isLoading: boolean;
   error: string | null;
   sendMessage: (content: string) => Promise<void>;
@@ -25,17 +27,28 @@ export function useChat(): UseChatReturn {
   const username = session?.user?.name;
   const firstname = username?.split(' ');
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      content: `Сайн уу ${
-        firstname?.[0] ?? ''
-      }, Би таны ai туслах байна, асуух зүйлээ асууна уу.`,
-      role: 'assistant',
-      timestamp: new Date(),
-      contentType: 'text',
-    },
-  ]);
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get('sessionId');
+
+  // Get messages by conversationId
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+
+  useEffect(() => {
+    try {
+      apiService.getConversationMessages(sessionId ?? '').then((response) => {
+        if (Object.keys(response).length > 0) {
+          const normalizedMessages: ChatMessage[] = Array.isArray(response)
+            ? (response as ChatMessage[])
+            : [response as ChatMessage];
+
+          setMessages((prev = []) => prev.concat(normalizedMessages));
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sessionId]);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,15 +56,16 @@ export function useChat(): UseChatReturn {
     async (content: string) => {
       if (!content.trim() || isLoading) return;
 
-      const userMessage: Message = {
-        id: Date.now().toString(),
+      const userMessage: ChatMessage = {
         content: content.trim(),
         role: 'user',
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         contentType: 'text',
       };
 
-      setMessages((prev) => [...prev, userMessage]);
+      setMessages((prev = []) => {
+        return [...prev, userMessage];
+      });
       setIsLoading(true);
       setError(null);
 
@@ -60,27 +74,24 @@ export function useChat(): UseChatReturn {
           content.trim()
         );
 
-        console.log({ response });
-
-        const aiMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          content: response.response || 'Уучлаарай, Та дахин оролдоно уу.',
-          role: 'assistant',
-          timestamp: new Date(),
+        const aiMessage: ChatMessage = {
+          content: response.content,
+          role: 'system',
+          timestamp: new Date().toISOString(),
           contentType: response.contentType,
+          data: response.data,
         };
 
-        setMessages((prev) => [...prev, aiMessage]);
+        setMessages((prev = []) => [...prev, aiMessage]);
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'An unknown error occurred';
         setError(errorMessage);
 
-        const errorResponseMessage: Message = {
-          id: (Date.now() + 1).toString(),
+        const errorResponseMessage: ChatMessage = {
           content: 'Уучлаарай, алдаа гарлаа. Та дахин оролдоно уу.',
-          role: 'assistant',
-          timestamp: new Date(),
+          role: 'system',
+          timestamp: new Date().toISOString(),
           contentType: 'text',
         };
 
@@ -95,10 +106,9 @@ export function useChat(): UseChatReturn {
   const clearMessages = useCallback(() => {
     setMessages([
       {
-        id: '1',
         content: 'Сайн уу? Би таны ai туслах байна, асуух зүйлээ асууна уу.',
-        role: 'assistant',
-        timestamp: new Date(),
+        role: 'system',
+        timestamp: new Date().toISOString(),
         contentType: 'text',
       },
     ]);

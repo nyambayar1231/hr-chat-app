@@ -1,11 +1,16 @@
+import { NextRequest } from 'next/server';
+
 export interface ChatRequest {
   message: string;
 }
 
 export interface ChatResponse {
-  response: string;
-  contentType: string;
-  data: Record<string, any>[];
+  role: 'user' | 'system';
+  content: string;
+  conversationId?: string;
+  contentType: 'text' | 'table';
+  data?: Record<string, any>[];
+  timestamp?: Date;
 }
 
 export interface ApiError {
@@ -64,6 +69,21 @@ class ApiService {
     return this.makeRequest<ChatResponse>('/api/chat', {
       method: 'POST',
       body: JSON.stringify({ message }),
+    });
+  }
+
+  async getConversations<T = any>(): Promise<T> {
+    return this.makeRequest<T>('/api/chat', {
+      method: 'GET',
+    });
+  }
+
+  async getConversationMessages<T = any>(sessionId: string): Promise<T> {
+    const query = sessionId
+      ? `?sessionId=${encodeURIComponent(sessionId)}`
+      : '';
+    return this.makeRequest<T>(`/api/chat/messages/${query}`, {
+      method: 'GET',
     });
   }
 }

@@ -6,7 +6,18 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { Send, BotMessageSquare, User, ChevronDown, Wrench, Brain, ListPlus, FileText, FileSpreadsheet, FileCog } from 'lucide-react';
+import {
+  Send,
+  BotMessageSquare,
+  User,
+  ChevronDown,
+  Wrench,
+  Brain,
+  ListPlus,
+  FileText,
+  FileSpreadsheet,
+  FileCog,
+} from 'lucide-react';
 import { useChat } from '@/lib/hooks/useChat';
 import {
   DropdownMenu,
@@ -20,10 +31,11 @@ import {
 } from '@radix-ui/react-dropdown-menu';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
+import { ChatTable } from './chatTable';
 
 export default function ChatPage() {
   const { data: session } = useSession();
-  const { messages, isLoading, sendMessage } = useChat();
+  const { messages = [], isLoading, sendMessage } = useChat();
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [selectedModel, setSelectedModel] = React.useState('Pro code Bot');
@@ -31,6 +43,8 @@ export default function ChatPage() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  console.log({ messages });
 
   useEffect(() => {
     scrollToBottom();
@@ -58,13 +72,23 @@ export default function ChatPage() {
                 >
                   <div className="flex items-center gap-2">
                     {selectedModel === 'Pro code Bot' ? (
-                      <Image className='w-4 h-4 text-primary' src={'/vs-code-24.png'} width={16} height={16} alt='icon' />
+                      <Image
+                        className="w-4 h-4 text-primary"
+                        src={'/vs-code-24.png'}
+                        width={16}
+                        height={16}
+                        alt="icon"
+                      />
+                    ) : selectedModel === 'Copilot Bot' ? (
+                      <Image
+                        className="w-4 h-4 text-primary"
+                        src={'/microsoft-copilot-24.png'}
+                        width={16}
+                        height={16}
+                        alt="icon"
+                      />
                     ) : (
-                      selectedModel === 'Copilot Bot' ? (
-                        <Image className='w-4 h-4 text-primary' src={'/microsoft-copilot-24.png'} width={16} height={16} alt='icon' />
-                      ) : (
-                        <ListPlus className="w-4 h-4 text-purple-600" />
-                      )
+                      <ListPlus className="w-4 h-4 text-purple-600" />
                     )}
 
                     <span className="font-medium text-slate-700">
@@ -91,7 +115,13 @@ export default function ChatPage() {
                   className="flex items-center gap-3 py-3 cursor-pointer hover:bg-green-50 focus:bg-green-50"
                   onClick={() => setSelectedModel('Pro code Bot')}
                 >
-                  <Image className='w-4 h-4 text-primary' src={'/vs-code-24.png'} width={16} height={16} alt='icon' />
+                  <Image
+                    className="w-4 h-4 text-primary"
+                    src={'/vs-code-24.png'}
+                    width={16}
+                    height={16}
+                    alt="icon"
+                  />
                   <div className="flex-1">
                     <div className="font-medium text-slate-700">
                       Pro code Bot
@@ -106,7 +136,13 @@ export default function ChatPage() {
                   className="flex items-center gap-3 py-3 cursor-pointer hover:bg-slate-50 focus:bg-green-50"
                   onClick={() => setSelectedModel('Copilot Bot')}
                 >
-                  <Image className='w-4 h-4 text-primary' src={'/microsoft-copilot-24.png'} width={16} height={16} alt='icon' />
+                  <Image
+                    className="w-4 h-4 text-primary"
+                    src={'/microsoft-copilot-24.png'}
+                    width={16}
+                    height={16}
+                    alt="icon"
+                  />
                   <div className="flex-1">
                     <div className="font-medium text-slate-700 dark:text-slate-200">
                       Copilot Bot
@@ -131,7 +167,6 @@ export default function ChatPage() {
                     <div className="w-2 h-2 bg-purple-600 rounded-full" />
                   )}
                 </DropdownMenuItem>
-
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -142,64 +177,94 @@ export default function ChatPage() {
       <div className="w-[80%] max-w-2xl mx-auto flex-1 overflow-y-auto">
         <div className="mx-auto px-4 py-6">
           <div className="space-y-6">
-            <h1 className="z-10 bg-gradient-to-r from-black via-pink-500 to-violet-800 inline-block text-transparent bg-clip-text font-normal text-5xl leading-tight">Hello, {session?.user?.name || 'there'}
-            </h1><br />
-            <h1 className="z-10 bg-gradient-to-r from-black via-pink-500 to-violet-800 inline-block text-transparent bg-clip-text font-normal text-5xl -mt-2 mb-2 leading-tight">How can I help you?</h1>
+            <h1 className="z-10 bg-gradient-to-r from-black via-pink-500 to-violet-800 inline-block text-transparent bg-clip-text font-normal text-5xl leading-tight">
+              Hello, {session?.user?.name || 'there'}
+            </h1>
+            <br />
+            <h1 className="z-10 bg-gradient-to-r from-black via-pink-500 to-violet-800 inline-block text-transparent bg-clip-text font-normal text-5xl -mt-2 mb-2 leading-tight">
+              How can I help you?
+            </h1>
 
-            <p className="text-neutral-500 leading-tight tracking-tight mb-6 text-lg">Use one of the most common prompts below <br />or use one of your own prompt to begin</p>
+            <p className="text-neutral-500 leading-tight tracking-tight mb-6 text-lg">
+              Use one of the most common prompts below <br />
+              or use one of your own prompt to begin
+            </p>
 
-
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex gap-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'
-                  }`}
-              >
-                {message.role === 'assistant' && (
-                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-1">
-                    <BotMessageSquare className="w-4 h-4 text-primary-foreground" />
-                  </div>
-                )}
-
-                <Card
-                  className={`max-w-[80%] p-4 ${message.role === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-card border-border'
+            {messages.length > 0 &&
+              messages.map((message, index) => {
+                console.log(message);
+                return (
+                  <div
+                    key={index}
+                    className={`flex gap-4 ${
+                      message.role === 'user' ? 'justify-end' : 'justify-start'
                     }`}
-                >
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {message.content}
-                  </p>
-                  <p
-                    className={`text-xs mt-2 opacity-70 ${message.role === 'user'
-                      ? 'text-primary-foreground/70'
-                      : 'text-muted-foreground'
-                      }`}
                   >
-                    {message.timestamp.toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </p>
-                </Card>
+                    {message.role === 'system' && (
+                      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-1">
+                        <BotMessageSquare className="w-4 h-4 text-primary-foreground" />
+                      </div>
+                    )}
 
-                {message.role === 'user' && (
-                  <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 mt-1">
-                    {session?.user?.image ? (
-                      <Image
-                        src={session.user.image}
-                        alt="User profile"
-                        width={28}
-                        height={28}
-                        className="rounded-full object-cover"
-                      />
-                    ) : (
-                      <User className="w-4 h-4 text-secondary-foreground" />
+                    <div className="flex flex-col space-y-4">
+                      <Card
+                        className={`max-w-[80%] p-4 ${
+                          message.role === 'user'
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-card border-border'
+                        }`}
+                      >
+                        {message.contentType === 'table' && (
+                          <ChatTable employeeData={message.data} />
+                        )}
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                          {message.content}
+                        </p>
+                        <p
+                          className={`text-xs mt-2 opacity-70 ${
+                            message.role === 'user'
+                              ? 'text-primary-foreground/70'
+                              : 'text-muted-foreground'
+                          }`}
+                        >
+                          {new Date(message.timestamp).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </p>
+                      </Card>
+
+                      {message.contentType === 'table' && (
+                        <Card
+                          className={`max-w-[80%] p-4 ${
+                            message.role === 'user'
+                              ? 'bg-primary text-primary-foreground'
+                              : 'bg-card border-border'
+                          }`}
+                        >
+                          {message.content}
+                        </Card>
+                      )}
+                    </div>
+
+                    {message.role === 'user' && (
+                      <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 mt-1">
+                        {session?.user?.image ? (
+                          <Image
+                            src={session.user.image}
+                            alt="User profile"
+                            width={28}
+                            height={28}
+                            className="rounded-full object-cover"
+                          />
+                        ) : (
+                          <User className="w-4 h-4 text-secondary-foreground" />
+                        )}
+                      </div>
                     )}
                   </div>
-                )}
-              </div>
-            ))}
+                );
+              })}
 
             {isLoading && (
               <div className="flex gap-4 justify-start">
@@ -225,22 +290,23 @@ export default function ChatPage() {
         </div>
       </div>
 
-
       <div className="w-[80%] max-w-2xl mx-auto border-t border-border bg-card/50 backdrop-blur-sm">
         <div className="mx-auto px-4 py-4">
           <div className="flex w-full mb-6 gap-3 text-sm text-neutral-800">
-            <div className="group relative grow border border-ccc shadow-sm hover:shadow-md hover:-translate-y-[1px] hover:bg-neutral-100/30 rounded-xl p-4 transition-all duration-300 ">Хүний нөөцийн бодлого журам
+            <div className="group relative grow border border-ccc shadow-sm hover:shadow-md hover:-translate-y-[1px] hover:bg-neutral-100/30 rounded-xl p-4 transition-all duration-300 ">
+              Хүний нөөцийн бодлого журам
               <FileText className="w-4 h-4 text-primary absolute right-2 bottom-2" />
             </div>
 
-            <div className="group relative grow border border-ccc shadow-sm hover:shadow-md hover:-translate-y-[1px] hover:bg-neutral-100/30  rounded-xl p-4 transition-all duration-300">Хүний нөөцийн мэдээлэл
+            <div className="group relative grow border border-ccc shadow-sm hover:shadow-md hover:-translate-y-[1px] hover:bg-neutral-100/30  rounded-xl p-4 transition-all duration-300">
+              Хүний нөөцийн мэдээлэл
               <FileSpreadsheet className="w-4 h-4 text-primary absolute right-2 bottom-2" />
             </div>
-            <div className="group relative grow border border-ccc shadow-sm hover:shadow-md hover:-translate-y-[1px] hover:bg-neutral-100/30  rounded-xl p-4 transition-all duration-300">Цаг бүртгэлийн автоматжуулалт
+            <div className="group relative grow border border-ccc shadow-sm hover:shadow-md hover:-translate-y-[1px] hover:bg-neutral-100/30  rounded-xl p-4 transition-all duration-300">
+              Цаг бүртгэлийн автоматжуулалт
               <FileCog className="w-4 h-4 text-primary absolute right-2 bottom-2" />
             </div>
           </div>
-
 
           <form onSubmit={handleSubmit} className="flex gap-3">
             <Input
