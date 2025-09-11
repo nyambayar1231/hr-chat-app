@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { apiService } from '@/lib/api';
 import {
@@ -10,7 +10,6 @@ import {
   SidebarMenuItem,
 } from './ui/sidebar';
 import { cn } from '@/lib/utils';
-import Link from 'next/link';
 
 interface ConversationItem {
   session_id?: string | number;

@@ -32,6 +32,7 @@ import {
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { ChatTable } from './chatTable';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
 export default function ChatPage() {
   const { data: session } = useSession();
@@ -44,11 +45,13 @@ export default function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  console.log({ messages });
-
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,7 +116,13 @@ export default function ChatPage() {
 
                 <DropdownMenuItem
                   className="flex items-center gap-3 py-3 cursor-pointer hover:bg-green-50 focus:bg-green-50"
-                  onClick={() => setSelectedModel('Pro code Bot')}
+                  onClick={() => {
+                    setSelectedModel('Pro code Bot');
+
+                    const params = new URLSearchParams(searchParams.toString());
+                    params.set('modelType', 'proCode');
+                    router.push(`${pathname}?${params.toString()}`);
+                  }}
                 >
                   <Image
                     className="w-4 h-4 text-primary"
@@ -134,7 +143,13 @@ export default function ChatPage() {
 
                 <DropdownMenuItem
                   className="flex items-center gap-3 py-3 cursor-pointer hover:bg-slate-50 focus:bg-green-50"
-                  onClick={() => setSelectedModel('Copilot Bot')}
+                  onClick={() => {
+                    const params = new URLSearchParams(searchParams.toString());
+                    params.set('modelType', 'copilot');
+                    router.push(`${pathname}?${params.toString()}`);
+
+                    setSelectedModel('Copilot Bot');
+                  }}
                 >
                   <Image
                     className="w-4 h-4 text-primary"
@@ -155,7 +170,13 @@ export default function ChatPage() {
 
                 <DropdownMenuItem
                   className="flex items-center gap-3 py-3 cursor-pointer hover:bg-slate-50 focus:bg-green-50"
-                  onClick={() => setSelectedModel('Copilot + Pro code Bot')}
+                  onClick={() => {
+                    setSelectedModel('Copilot + Pro code Bot');
+
+                    const params = new URLSearchParams(searchParams.toString());
+                    params.set('modelType', 'both');
+                    router.push(`${pathname}?${params.toString()}`);
+                  }}
                 >
                   <ListPlus className="w-4 h-4 text-purple-600" />
                   <div className="flex-1">

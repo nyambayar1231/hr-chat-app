@@ -23,6 +23,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <VersionSwitcher />
       </SidebarHeader>
 
+      {/* < */}
       <ConversationHistory />
       <SidebarFooter>
         <NavUser user={session?.user} />

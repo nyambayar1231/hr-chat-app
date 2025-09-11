@@ -1,5 +1,3 @@
-import { NextRequest } from 'next/server';
-
 export interface ChatRequest {
   message: string;
 }
@@ -65,8 +63,35 @@ class ApiService {
     }
   }
 
-  async sendChatMessage(message: string): Promise<ChatResponse> {
-    return this.makeRequest<ChatResponse>('/api/chat', {
+  async sendChatMessage(
+    message: string,
+    endpoint: string
+  ): Promise<ChatResponse> {
+    // Get sessionId from current URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('sessionId');
+
+    // Add sessionId as query parameter if it exists
+    const url = sessionId ? `${endpoint}?sessionId=${sessionId}` : endpoint;
+
+    const response = await this.makeRequest<any>(url, {
+      method: 'POST',
+      body: JSON.stringify({ message }),
+    });
+
+    if (response?.shouldUpdateUrl && response?.conversationId) {
+      const newUrl = new URL(window.location.href);
+      newUrl.pathname = '/';
+      newUrl.searchParams.set('sessionId', response.conversationId);
+
+      window.history.pushState({}, '', newUrl);
+    }
+
+    return response;
+  }
+
+  async sendCopilotChatMessage(message: string): Promise<ChatResponse> {
+    return this.makeRequest<ChatResponse>('/api/chat/copilot', {
       method: 'POST',
       body: JSON.stringify({ message }),
     });

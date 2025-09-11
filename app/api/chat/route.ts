@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
 
 interface ChatRequest {
   message: string;
-}
-
-interface ChatResponse {
-  response: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -28,7 +25,8 @@ export async function POST(request: NextRequest) {
 
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:3100';
 
-    console.log(session.user?.name);
+    const { searchParams } = new URL(request.url);
+    const sessionId = searchParams.get('sessionId');
 
     const response = await fetch(`${backendUrl}/chat`, {
       method: 'POST',
@@ -41,6 +39,7 @@ export async function POST(request: NextRequest) {
       credentials: 'include',
       body: JSON.stringify({
         message: body.message,
+        conversationId: sessionId,
       }),
     });
 
@@ -54,7 +53,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const data: ChatResponse = await response.json();
+    const data = await response.json();
+
+    if (!sessionId) {
+      return NextResponse.json({
+        ...data.response,
+        shouldUpdateUrl: true,
+        conversationId: data.response.conversationId,
+      });
+    }
 
     return NextResponse.json(data.response);
   } catch (error) {

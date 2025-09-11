@@ -7,7 +7,7 @@ export interface ChatMessage {
   // id: string;
   role: 'user' | 'system';
   content: string;
-  // conversationId: string;
+  conversationId?: string | null;
   contentType: 'text' | 'table';
   data?: Record<string, any>[];
   timestamp: string;
@@ -22,26 +22,23 @@ export interface UseChatReturn {
 }
 
 export function useChat(): UseChatReturn {
-  const { data: session } = useSession();
-
-  const username = session?.user?.name;
-  const firstname = username?.split(' ');
-
   const searchParams = useSearchParams();
-  const sessionId = searchParams.get('sessionId');
+  const modelType = searchParams.get('modelType');
+  const [selectedModel, setSelectedModel] = useState('proCode');
 
   // Get messages by conversationId
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const sessionId = searchParams.get('sessionId');
+
+  useEffect(() => {
+    setSelectedModel(modelType ?? 'proCode');
+  }, [modelType]);
 
   useEffect(() => {
     try {
       apiService.getConversationMessages(sessionId ?? '').then((response) => {
         if (Object.keys(response).length > 0) {
-          const normalizedMessages: ChatMessage[] = Array.isArray(response)
-            ? (response as ChatMessage[])
-            : [response as ChatMessage];
-
-          setMessages((prev = []) => prev.concat(normalizedMessages));
+          setMessages(response);
         }
       });
     } catch (error) {
@@ -61,6 +58,7 @@ export function useChat(): UseChatReturn {
         role: 'user',
         timestamp: new Date().toISOString(),
         contentType: 'text',
+        conversationId: sessionId,
       };
 
       setMessages((prev = []) => {
@@ -70,8 +68,12 @@ export function useChat(): UseChatReturn {
       setError(null);
 
       try {
+        const endpoint =
+          selectedModel === 'proCode' ? '/api/chat' : '/api/chat/copilot';
+
         const response: ChatResponse = await apiService.sendChatMessage(
-          content.trim()
+          content.trim(),
+          endpoint
         );
 
         const aiMessage: ChatMessage = {
