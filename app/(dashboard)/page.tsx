@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { Send, Bot, User, ChevronDown, Wrench } from 'lucide-react';
+import { Send, Bot, User, ChevronDown, Wrench, Brain, ListPlus, FileText, FileSpreadsheet, FileCog } from 'lucide-react';
 import { useChat } from '@/lib/hooks/useChat';
 import {
   DropdownMenu,
@@ -18,12 +18,15 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
+import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 
 export default function ChatPage() {
+  const { data: session } = useSession();
   const { messages, isLoading, sendMessage } = useChat();
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [selectedModel, setSelectedModel] = React.useState('General Modal');
+  const [selectedModel, setSelectedModel] = React.useState('Pro code Bot');
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -54,7 +57,7 @@ export default function ChatPage() {
                   className="min-w-[180px] justify-between bg-white border-slate-300 hover:bg-slate-50 shadow-sm"
                 >
                   <div className="flex items-center gap-2">
-                    {selectedModel === 'General Modal' ? (
+                    {selectedModel === 'Pro code Bot' ? (
                       <Bot className="w-4 h-4 text-primary" />
                     ) : (
                       <Wrench className="w-4 h-4 text-purple-600" />
@@ -74,41 +77,57 @@ export default function ChatPage() {
               >
                 <DropdownMenuLabel className="text-slate-600 font-semibold">
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4" />
-                    AI Models
+                    <Brain className="w-4 h-4" />
+                    AI Bots
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-slate-200" />
 
                 <DropdownMenuItem
                   className="flex items-center gap-3 py-3 cursor-pointer hover:bg-green-50 focus:bg-green-50"
-                  onClick={() => setSelectedModel('General Modal')}
+                  onClick={() => setSelectedModel('Pro code Bot')}
                 >
-                  <Bot className="w-4 h-4 text-primary" />
+                  <Image className='w-4 h-4 text-primary' src={'/vs-code-24.png'} width={16} height={16} alt='icon' />
                   <div className="flex-1">
                     <div className="font-medium text-slate-700">
-                      General Modal
+                      Pro code Bot
                     </div>
                   </div>
-                  {selectedModel === 'General Modal' && (
+                  {selectedModel === 'Pro code Bot' && (
                     <div className="w-2 h-2 bg-primary rounded-full" />
                   )}
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
                   className="flex items-center gap-3 py-3 cursor-pointer hover:bg-slate-50 focus:bg-green-50"
-                  onClick={() => setSelectedModel('Copilot Studio')}
+                  onClick={() => setSelectedModel('Copilot Bot')}
                 >
-                  <Wrench className="w-4 h-4 text-purple-600" />
+                  <Image className='w-4 h-4 text-primary' src={'/microsoft-copilot-24.png'} width={16} height={16} alt='icon' />
                   <div className="flex-1">
                     <div className="font-medium text-slate-700 dark:text-slate-200">
-                      Copilot Studio
+                      Copilot Bot
                     </div>
                   </div>
-                  {selectedModel === 'Copilot Studio' && (
+                  {selectedModel === 'Copilot Bot' && (
                     <div className="w-2 h-2 bg-purple-600 rounded-full" />
                   )}
                 </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  className="flex items-center gap-3 py-3 cursor-pointer hover:bg-slate-50 focus:bg-green-50"
+                  onClick={() => setSelectedModel('Copilot + Pro code Bot')}
+                >
+                  <ListPlus className="w-4 h-4 text-purple-600" />
+                  <div className="flex-1">
+                    <div className="font-medium text-slate-700 dark:text-slate-200">
+                      Copilot + Pro code Bot
+                    </div>
+                  </div>
+                  {selectedModel === 'Copilot + Pro code Bot' && (
+                    <div className="w-2 h-2 bg-purple-600 rounded-full" />
+                  )}
+                </DropdownMenuItem>
+
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -116,15 +135,21 @@ export default function ChatPage() {
       </header>
 
       {/* Messages */}
-      <div className="w-full flex-1 overflow-y-auto">
+      <div className="w-[80%] max-w-2xl mx-auto flex-1 overflow-y-auto">
         <div className="mx-auto px-4 py-6">
           <div className="space-y-6">
+            <h1 className="z-10 bg-gradient-to-r from-black via-pink-500 to-violet-800 inline-block text-transparent bg-clip-text font-normal text-5xl leading-tight">Hello, {session?.user?.name || 'there'}
+            </h1><br />
+            <h1 className="z-10 bg-gradient-to-r from-black via-pink-500 to-violet-800 inline-block text-transparent bg-clip-text font-normal text-5xl -mt-2 mb-2 leading-tight">How can I help you?</h1>
+
+            <p className="text-neutral-500 leading-tight tracking-tight mb-6 text-lg">Use one of the most common prompts below <br />or use one of your own prompt to begin</p>
+
+
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex gap-4 ${
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
-                }`}
+                className={`flex gap-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'
+                  }`}
               >
                 {message.role === 'assistant' && (
                   <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-1">
@@ -133,21 +158,19 @@ export default function ChatPage() {
                 )}
 
                 <Card
-                  className={`max-w-[80%] p-4 ${
-                    message.role === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-card border-border'
-                  }`}
+                  className={`max-w-[80%] p-4 ${message.role === 'user'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-card border-border'
+                    }`}
                 >
                   <p className="text-sm leading-relaxed whitespace-pre-wrap">
                     {message.content}
                   </p>
                   <p
-                    className={`text-xs mt-2 opacity-70 ${
-                      message.role === 'user'
-                        ? 'text-primary-foreground/70'
-                        : 'text-muted-foreground'
-                    }`}
+                    className={`text-xs mt-2 opacity-70 ${message.role === 'user'
+                      ? 'text-primary-foreground/70'
+                      : 'text-muted-foreground'
+                      }`}
                   >
                     {message.timestamp.toLocaleTimeString([], {
                       hour: '2-digit',
@@ -158,7 +181,17 @@ export default function ChatPage() {
 
                 {message.role === 'user' && (
                   <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 mt-1">
-                    <User className="w-4 h-4 text-secondary-foreground" />
+                    {session?.user?.image ? (
+                      <Image
+                        src={session.user.image}
+                        alt="User profile"
+                        width={28}
+                        height={28}
+                        className="rounded-full object-cover"
+                      />
+                    ) : (
+                      <User className="w-4 h-4 text-secondary-foreground" />
+                    )}
                   </div>
                 )}
               </div>
@@ -188,14 +221,29 @@ export default function ChatPage() {
         </div>
       </div>
 
-      <div className="border-t border-border bg-card/50 backdrop-blur-sm">
+
+      <div className="w-[80%] max-w-2xl mx-auto border-t border-border bg-card/50 backdrop-blur-sm">
         <div className="mx-auto px-4 py-4">
+          <div className="flex w-full mb-6 gap-3 text-sm text-neutral-800">
+            <div className="group relative grow border border-ccc shadow-sm hover:shadow-md hover:-translate-y-[1px] hover:bg-neutral-100/30 rounded-xl p-4 transition-all duration-300 ">Хүний нөөцийн бодлого журам
+              <FileText className="w-4 h-4 text-primary absolute right-2 bottom-2" />
+            </div>
+
+            <div className="group relative grow border border-ccc shadow-sm hover:shadow-md hover:-translate-y-[1px] hover:bg-neutral-100/30  rounded-xl p-4 transition-all duration-300">Хүний нөөцийн мэдээлэл
+              <FileSpreadsheet className="w-4 h-4 text-primary absolute right-2 bottom-2" />
+            </div>
+            <div className="group relative grow border border-ccc shadow-sm hover:shadow-md hover:-translate-y-[1px] hover:bg-neutral-100/30  rounded-xl p-4 transition-all duration-300">Цаг бүртгэлийн автоматжуулалт
+              <FileCog className="w-4 h-4 text-primary absolute right-2 bottom-2" />
+            </div>
+          </div>
+
+
           <form onSubmit={handleSubmit} className="flex gap-3">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Асуух зүйлээ бичнэ үү?"
-              className="flex-1 bg-input border-border focus:ring-2 focus:ring-ring"
+              className="flex-1 bg-white border-border focus:ring-2 focus:ring-ring"
               disabled={isLoading}
             />
             <Button

@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { MessageSquare, Phone } from 'lucide-react';
+import { BotMessageSquare, Phone } from 'lucide-react';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -31,10 +31,10 @@ export default function LoginPage() {
         <div className="text-center space-y-2">
           <div className="flex justify-center">
             <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
-              <MessageSquare className="w-6 h-6 text-primary-foreground" />
+              <BotMessageSquare className="w-6 h-6 text-primary-foreground" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Welcome back</h1>
+          <h1 className="text-2xl font-bold text-foreground">HR Buddy</h1>
           <p className="text-muted-foreground">
             Sign in to your AI Chat account
           </p>
@@ -50,8 +50,7 @@ export default function LoginPage() {
 
           <CardContent className="space-y-4">
             <Button
-              variant="outline"
-              className="w-full border-border hover:bg-accent hover:text-accent-foreground bg-transparent"
+              className="w-full border-border bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={handleMicrosoftLogin}
               disabled={isLoading}
             >
@@ -69,7 +68,7 @@ export default function LoginPage() {
                 <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
+                <span className="bg-card px-2 text-muted-foreground">
                   Or
                 </span>
               </div>
@@ -82,11 +81,12 @@ export default function LoginPage() {
               <Input
                 id="phone"
                 type="tel"
-                placeholder="Утасны дугаараа оруулна уу"
-                className="border-border"
+                placeholder="Phone number"
+                className="border-border bg-white"
               />
               <Button
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                variant="secondary"
+                className="w-full"
                 disabled={isLoading}
               >
                 <Phone className="w-4 h-4 mr-2" />
@@ -96,7 +96,7 @@ export default function LoginPage() {
           </CardContent>
         </Card>
 
-        <div className="text-center">
+        {/* <div className="text-center">
           <p className="text-sm text-muted-foreground">
             Don't have an account? &apos;
             <Link
@@ -106,7 +106,7 @@ export default function LoginPage() {
               Sign up
             </Link>
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
