@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { Send, Bot, User, ChevronDown, Wrench, Brain, ListPlus, FileText, FileSpreadsheet, FileCog } from 'lucide-react';
+import { Send, BotMessageSquare, User, ChevronDown, Wrench, Brain, ListPlus, FileText, FileSpreadsheet, FileCog } from 'lucide-react';
 import { useChat } from '@/lib/hooks/useChat';
 import {
   DropdownMenu,
@@ -58,9 +58,13 @@ export default function ChatPage() {
                 >
                   <div className="flex items-center gap-2">
                     {selectedModel === 'Pro code Bot' ? (
-                      <Bot className="w-4 h-4 text-primary" />
+                      <Image className='w-4 h-4 text-primary' src={'/vs-code-24.png'} width={16} height={16} alt='icon' />
                     ) : (
-                      <Wrench className="w-4 h-4 text-purple-600" />
+                      selectedModel === 'Copilot Bot' ? (
+                        <Image className='w-4 h-4 text-primary' src={'/microsoft-copilot-24.png'} width={16} height={16} alt='icon' />
+                      ): (
+                        <ListPlus className="w-4 h-4 text-purple-600" />
+                      )
                     )}
 
                     <span className="font-medium text-slate-700">
@@ -153,7 +157,7 @@ export default function ChatPage() {
               >
                 {message.role === 'assistant' && (
                   <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-1">
-                    <Bot className="w-4 h-4 text-primary-foreground" />
+                    <BotMessageSquare className="w-4 h-4 text-primary-foreground" />
                   </div>
                 )}
 
@@ -200,7 +204,7 @@ export default function ChatPage() {
             {isLoading && (
               <div className="flex gap-4 justify-start">
                 <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-1">
-                  <Bot className="w-4 h-4 text-primary-foreground" />
+                  <BotMessageSquare className="w-4 h-4 text-primary-foreground" />
                 </div>
                 <Card className="max-w-[80%] p-4 bg-card border-border">
                   <div className="flex items-center gap-2">
