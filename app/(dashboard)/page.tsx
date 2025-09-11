@@ -62,7 +62,7 @@ export default function ChatPage() {
                     ) : (
                       selectedModel === 'Copilot Bot' ? (
                         <Image className='w-4 h-4 text-primary' src={'/microsoft-copilot-24.png'} width={16} height={16} alt='icon' />
-                      ): (
+                      ) : (
                         <ListPlus className="w-4 h-4 text-purple-600" />
                       )
                     )}
