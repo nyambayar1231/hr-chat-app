@@ -7,6 +7,8 @@ export interface Message {
   content: string;
   role: 'user' | 'assistant';
   timestamp: Date;
+  contentType: string;
+  data?: Record<string, any>[];
 }
 
 export interface UseChatReturn {
@@ -31,6 +33,7 @@ export function useChat(): UseChatReturn {
       }, Би таны ai туслах байна, асуух зүйлээ асууна уу.`,
       role: 'assistant',
       timestamp: new Date(),
+      contentType: 'text',
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,6 +48,7 @@ export function useChat(): UseChatReturn {
         content: content.trim(),
         role: 'user',
         timestamp: new Date(),
+        contentType: 'text',
       };
 
       setMessages((prev) => [...prev, userMessage]);
@@ -56,11 +60,14 @@ export function useChat(): UseChatReturn {
           content.trim()
         );
 
+        console.log({ response });
+
         const aiMessage: Message = {
           id: (Date.now() + 1).toString(),
           content: response.response || 'Уучлаарай, Та дахин оролдоно уу.',
           role: 'assistant',
           timestamp: new Date(),
+          contentType: response.contentType,
         };
 
         setMessages((prev) => [...prev, aiMessage]);
@@ -74,6 +81,7 @@ export function useChat(): UseChatReturn {
           content: 'Уучлаарай, алдаа гарлаа. Та дахин оролдоно уу.',
           role: 'assistant',
           timestamp: new Date(),
+          contentType: 'text',
         };
 
         setMessages((prev) => [...prev, errorResponseMessage]);
