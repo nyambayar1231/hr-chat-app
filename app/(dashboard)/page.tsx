@@ -236,7 +236,7 @@ export default function ChatPage() {
                         }`}
                       >
                         {message.contentType === 'table' && (
-                          <ChatTable employeeData={message?.data} />
+                          <ChatTable employeeData={message?.data ?? []} />
                         )}
                         <p className="text-sm leading-relaxed whitespace-pre-wrap">
                           {message.content}

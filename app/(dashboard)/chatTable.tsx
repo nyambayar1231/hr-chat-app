@@ -12,7 +12,7 @@ import {
 export function ChatTable({
   employeeData,
 }: {
-  employeeData: Record<string, any>[];
+  employeeData?: Record<string, any>[];
 }) {
   return (
     <Table>
@@ -24,7 +24,7 @@ export function ChatTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {employeeData.map((employee) => (
+        {employeeData?.map((employee) => (
           <TableRow key={employee.name}>
             <TableCell className="font-medium">{employee.name}</TableCell>
             <TableCell>{employee.requiredWorkHour}</TableCell>
