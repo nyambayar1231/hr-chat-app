@@ -1,40 +1,32 @@
 'use client';
 
 import * as React from 'react';
-
-import { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import {
-  Send,
-  BotMessageSquare,
-  User,
-  ChevronDown,
-  Wrench,
-  Brain,
-  ListPlus,
-  FileText,
-  FileSpreadsheet,
-  FileCog,
-} from 'lucide-react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useChat } from '@/lib/hooks/useChat';
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
-import {
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@radix-ui/react-dropdown-menu';
-import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { ChatTable } from './chatTable';
 import { usePathname, useRouter } from 'next/navigation';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { ChevronDown, ListPlus, Brain } from 'lucide-react';
+import {
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+import { Card } from '@/components/ui/card';
+import { BotMessageSquare, User } from 'lucide-react';
+import { Send } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { FileText, FileSpreadsheet, FileCog } from 'lucide-react';
 
-export default function ChatPage() {
+// Component that uses the chat hook
+function ChatPageContent() {
   const { data: session } = useSession();
   const { messages = [], isLoading, sendMessage } = useChat();
   const [input, setInput] = useState('');
@@ -340,5 +332,19 @@ export default function ChatPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+// Loading fallback component
+function ChatPageLoading() {
+  return <div>Loading chat...</div>;
+}
+
+// Main page component with Suspense boundary
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<ChatPageLoading />}>
+      <ChatPageContent />
+    </Suspense>
   );
 }

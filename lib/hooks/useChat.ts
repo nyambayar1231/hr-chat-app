@@ -1,4 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
+'use client';
+
+import React, { useState, useCallback, useEffect, Suspense } from 'react';
 import { apiService, ChatResponse } from '@/lib/api';
 
 import { useSearchParams } from 'next/navigation';
@@ -124,4 +126,19 @@ export function useChat(): UseChatReturn {
     sendMessage,
     clearMessages,
   };
+}
+
+// Wrapper component that can be used with Suspense
+export function ChatProvider({
+  children,
+}: {
+  children: (chat: UseChatReturn) => React.ReactNode;
+}) {
+  const chat = useChat();
+  return React.createElement(React.Fragment, null, children(chat));
+}
+
+// Hook that can be used with Suspense boundary
+export function useChatWithSuspense() {
+  return useChat();
 }

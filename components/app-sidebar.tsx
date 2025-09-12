@@ -1,6 +1,7 @@
 'use client';
 
 import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
+import { Suspense } from 'react';
 
 import {
   Sidebar,
@@ -24,7 +25,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       {/* < */}
-      <ConversationHistory />
+      <Suspense
+        fallback={
+          <div className="p-4 text-sm text-muted-foreground">
+            Loading conversations...
+          </div>
+        }
+      >
+        <ConversationHistory />
+      </Suspense>
       <SidebarFooter>
         <NavUser user={session?.user} />
       </SidebarFooter>
