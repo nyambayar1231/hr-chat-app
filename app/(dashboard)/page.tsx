@@ -175,21 +175,23 @@ function ChatPageContent() {
       </header>
 
       {/* Messages */}
-      <div className="w-[80%] max-w-2xl mx-auto flex-1 overflow-y-auto">
+      <div className="w-[80%] mx-auto flex-1 overflow-y-auto">
         <div className="mx-auto px-4 py-6">
           <div className="space-y-6">
-            <h1 className="z-10 bg-gradient-to-r from-black via-pink-500 to-violet-800 inline-block text-transparent bg-clip-text font-normal text-5xl leading-tight">
-              Hello, {session?.user?.name || 'there'}
-            </h1>
-            <br />
-            <h1 className="z-10 bg-gradient-to-r from-black via-pink-500 to-violet-800 inline-block text-transparent bg-clip-text font-normal text-5xl -mt-2 mb-2 leading-tight">
-              How can I help you?
-            </h1>
+            <div className='text-center'>
+              <h1 className="z-10 bg-gradient-to-r from-black via-pink-500 to-violet-800 inline-block text-transparent bg-clip-text font-normal text-5xl leading-tight">
+                Hello, {session?.user?.name || 'there'}
+              </h1>
+              <br />
+              <h1 className="z-10 bg-gradient-to-r from-black via-pink-500 to-violet-800 inline-block text-transparent bg-clip-text font-normal text-5xl -mt-2 mb-2 leading-tight">
+                How can I help you?
+              </h1>
 
-            <p className="text-neutral-500 leading-tight tracking-tight mb-6 text-lg">
-              Use one of the most common prompts below <br />
-              or use one of your own prompt to begin
-            </p>
+              <p className="text-neutral-500 leading-tight tracking-tight mb-6 text-lg">
+                Use one of the most common prompts below <br />
+                or use one of your own prompt to begin
+              </p>
+            </div>
 
             {messages.length > 0 &&
               messages.map((message, index) => {
@@ -209,7 +211,7 @@ function ChatPageContent() {
 
                     <div className="flex flex-col space-y-4">
                       <Card
-                        className={`max-w-[80%] p-4 ${
+                        className={`max-w-[80%] p-4 min-w-3xs ${
                           message.role === 'user'
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-card border-border'
@@ -237,7 +239,7 @@ function ChatPageContent() {
 
                       {message.contentType === 'table' && (
                         <Card
-                          className={`max-w-[80%] p-4 ${
+                          className={`max-w-[80%] p-4 min-w-3xs ${
                             message.role === 'user'
                               ? 'bg-primary text-primary-foreground'
                               : 'bg-card border-border'
@@ -272,7 +274,7 @@ function ChatPageContent() {
                 <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-1">
                   <BotMessageSquare className="w-4 h-4 text-primary-foreground" />
                 </div>
-                <Card className="max-w-[80%] p-4 bg-card border-border">
+                <Card className="max-w-[80%] p-4 min-w-3xs bg-card border-border">
                   <div className="flex items-center gap-2">
                     <div className="flex gap-1">
                       <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.3s]"></div>
