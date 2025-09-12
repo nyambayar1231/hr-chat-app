@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { apiService, ChatResponse } from '@/lib/api';
-import { useSession } from 'next-auth/react';
+
 import { useSearchParams } from 'next/navigation';
 
 export interface ChatMessage {

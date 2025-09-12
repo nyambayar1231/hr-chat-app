@@ -34,7 +34,7 @@ import { useSession } from 'next-auth/react';
 import { ChatTable } from './chatTable';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
-export default function ChatPage() {
+function ChatPage() {
   const { data: session } = useSession();
   const { messages = [], isLoading, sendMessage } = useChat();
   const [input, setInput] = useState('');
@@ -352,5 +352,13 @@ export default function ChatPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function ChatPageWrapper() {
+  return (
+    <React.Suspense fallback={<div>Loading…</div>}>
+      <ChatPage />
+    </React.Suspense>
   );
 }
