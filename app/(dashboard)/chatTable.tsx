@@ -15,7 +15,7 @@ export function ChatTable({
   employeeData?: Record<string, any>[];
 }) {
   return (
-    <Table>
+    <Table className="w-full">
       <TableHeader>
         <TableRow>
           <TableHead className="w-[100px]">Овог нэр</TableHead>

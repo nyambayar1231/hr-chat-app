@@ -178,7 +178,7 @@ function ChatPageContent() {
       <div className="w-[80%] mx-auto flex-1 overflow-y-auto">
         <div className="mx-auto px-4 py-6">
           <div className="space-y-6">
-            <div className='text-center'>
+            <div className="text-center">
               <h1 className="z-10 bg-gradient-to-r from-black via-pink-500 to-violet-800 inline-block text-transparent bg-clip-text font-normal text-5xl leading-tight">
                 Hello, {session?.user?.name || 'there'}
               </h1>
@@ -211,18 +211,20 @@ function ChatPageContent() {
 
                     <div className="flex flex-col space-y-4">
                       <Card
-                        className={`max-w-[80%] p-4 min-w-3xs ${
+                        className={`max-w-[100%] p-4 min-w-3xs ${
                           message.role === 'user'
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-card border-border'
                         }`}
                       >
-                        {message.contentType === 'table' && (
+                        {message.contentType === 'table' ? (
                           <ChatTable employeeData={message?.data ?? []} />
+                        ) : (
+                          <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                            {message.content}
+                          </p>
                         )}
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                          {message.content}
-                        </p>
+
                         <p
                           className={`text-xs mt-2 opacity-70 ${
                             message.role === 'user'
