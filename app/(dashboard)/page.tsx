@@ -32,9 +32,9 @@ import {
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { ChatTable } from './chatTable';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
-function ChatPage() {
+export default function ChatPage() {
   const { data: session } = useSession();
   const { messages = [], isLoading, sendMessage } = useChat();
   const [input, setInput] = useState('');
@@ -50,7 +50,7 @@ function ChatPage() {
   }, [messages]);
 
   const router = useRouter();
-  const searchParams = useSearchParams();
+
   const pathname = usePathname();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -118,10 +118,6 @@ function ChatPage() {
                   className="flex items-center gap-3 py-3 cursor-pointer hover:bg-green-50 focus:bg-green-50"
                   onClick={() => {
                     setSelectedModel('Pro code Bot');
-
-                    const params = new URLSearchParams(searchParams.toString());
-                    params.set('modelType', 'proCode');
-                    router.push(`${pathname}?${params.toString()}`);
                   }}
                 >
                   <Image
@@ -144,10 +140,6 @@ function ChatPage() {
                 <DropdownMenuItem
                   className="flex items-center gap-3 py-3 cursor-pointer hover:bg-slate-50 focus:bg-green-50"
                   onClick={() => {
-                    const params = new URLSearchParams(searchParams.toString());
-                    params.set('modelType', 'copilot');
-                    router.push(`${pathname}?${params.toString()}`);
-
                     setSelectedModel('Copilot Bot');
                   }}
                 >
@@ -172,10 +164,6 @@ function ChatPage() {
                   className="flex items-center gap-3 py-3 cursor-pointer hover:bg-slate-50 focus:bg-green-50"
                   onClick={() => {
                     setSelectedModel('Copilot + Pro code Bot');
-
-                    const params = new URLSearchParams(searchParams.toString());
-                    params.set('modelType', 'both');
-                    router.push(`${pathname}?${params.toString()}`);
                   }}
                 >
                   <ListPlus className="w-4 h-4 text-purple-600" />
@@ -352,13 +340,5 @@ function ChatPage() {
         </div>
       </div>
     </main>
-  );
-}
-
-export default function ChatPageWrapper() {
-  return (
-    <React.Suspense fallback={<div>Loading…</div>}>
-      <ChatPage />
-    </React.Suspense>
   );
 }
